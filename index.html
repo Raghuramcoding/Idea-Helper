@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#111522">
+    <title>Idea Orbit — Find your next project</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #111522;
+        color: #f5f4f0;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        --muted: #9da3b4;
+        --lime: #d7f36a;
+        --panel: #1b2030;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        min-width: 320px;
+        min-height: 100vh;
+        margin: 0;
+        background:
+          radial-gradient(ellipse at 18% 18%, #2b2850 0, transparent 36%),
+          radial-gradient(ellipse at 85% 78%, #1b3940 0, transparent 32%),
+          #111522;
+      }
+
+      button, select { font: inherit; }
+
+      .app {
+        width: min(1120px, 100%);
+        min-height: 100vh;
+        margin: 0 auto;
+        padding: 28px 32px 38px;
+      }
+
+      .topbar, .brand, .status, .result-heading, .result-actions {
+        display: flex;
+        align-items: center;
+      }
+
+      .topbar { justify-content: space-between; }
+      .brand { gap: 10px; font-size: 15px; font-weight: 750; letter-spacing: -.03em; }
+      .brand-mark { color: var(--lime); font-size: 21px; }
+
+      .status {
+        gap: 8px;
+        color: #c5c9d4;
+        font-size: 12px;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+      }
+
+      .status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--lime);
+        box-shadow: 0 0 12px #d7f36a88;
+      }
+
+      main { padding-top: 58px; }
+      .intro { max-width: 650px; margin: 0 auto 36px; text-align: center; }
+
+      .eyebrow {
+        margin: 0 0 13px;
+        color: var(--lime);
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: .17em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(36px, 6vw, 58px);
+        font-weight: 760;
+        letter-spacing: -.065em;
+        line-height: 1.04;
+      }
+
+      .intro-copy {
+        max-width: 470px;
+        margin: 16px auto 0;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.6;
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(320px, 1fr) minmax(300px, .86fr);
+        align-items: center;
+        gap: clamp(32px, 7vw, 88px);
+        width: min(920px, 100%);
+        margin: 0 auto;
+      }
+
+      .wheel-area { display: grid; justify-items: center; }
+
+      .wheel-wrap {
+        position: relative;
+        width: min(100%, 410px);
+        aspect-ratio: 1;
+        padding: 18px;
+        filter: drop-shadow(0 22px 38px #0005);
+      }
+
+      .pointer {
+        position: absolute;
+        z-index: 2;
+        top: 4px;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-right: 13px solid transparent;
+        border-bottom: 0;
+        border-left: 13px solid transparent;
+        border-top: 23px solid #fff;
+        transform: translateX(-50%);
+        filter: drop-shadow(0 3px 4px #0008);
+      }
+
+      #wheel {
+        display: block;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+        border: 5px solid #ffffffde;
+        border-radius: 50%;
+        background: #222738;
+        transition: transform 4.2s cubic-bezier(.12, .78, .12, 1);
+      }
+
+      .slice-label {
+        fill: #111522;
+        font-size: 9.5px;
+        font-weight: 800;
+        letter-spacing: .01em;
+        text-anchor: middle;
+        dominant-baseline: middle;
+      }
+
+      .hub {
+        fill: #171b29;
+        stroke: #ffffffcc;
+        stroke-width: 4;
+      }
+
+      .hub-star { fill: var(--lime); }
+
+      .wheel-hint {
+        margin: 6px 0 0;
+        color: #858b9d;
+        font-size: 12px;
+      }
+
+      .controls {
+        width: 100%;
+        max-width: 410px;
+        margin-top: 22px;
+      }
+
+      .control-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #c7cad4;
+        font-size: 12px;
+        font-weight: 650;
+      }
+
+      select {
+        display: block;
+        width: 100%;
+        min-height: 46px;
+        padding: 0 40px 0 14px;
+        border: 1px solid #ffffff1b;
+        border-radius: 11px;
+        outline: none;
+        background: #1b2030;
+        color: #f5f4f0;
+      }
+
+      select:focus-visible, button:focus-visible {
+        outline: 3px solid #d7f36a99;
+        outline-offset: 3px;
+      }
+
+      .spin-button {
+        width: 100%;
+        min-height: 54px;
+        margin-top: 12px;
+        border: 0;
+        border-radius: 12px;
+        background: var(--lime);
+        color: #171b20;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 800;
+        transition: transform .18s ease, background .18s ease;
+      }
+
+      .spin-button:hover:not(:disabled) { transform: translateY(-2px); background: #e3ff7e; }
+      .spin-button:active:not(:disabled) { transform: translateY(0); }
+      .spin-button:disabled { cursor: wait; opacity: .75; }
+
+      .result-card {
+        min-height: 310px;
+        padding: 27px;
+        border: 1px solid #ffffff13;
+        border-radius: 20px;
+        background: linear-gradient(145deg, #212638, #191e2d 70%);
+        box-shadow: 0 18px 55px #0002;
+      }
+
+      .result-heading { justify-content: space-between; gap: 12px; }
+
+      .result-heading h2 {
+        margin: 0;
+        color: #aeb4c3;
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+      }
+
+      .sparkle { color: var(--lime); font-size: 18px; }
+
+      .idea-category {
+        display: inline-flex;
+        margin-top: 0;
+        padding: 6px 10px;
+        border: 1px solid #d7f36a45;
+        border-radius: 999px;
+        color: var(--lime);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .04em;
+      }
+
+      .idea-list { display: grid; gap: 14px; margin-top: 20px; }
+
+      .idea-item {
+        padding: 17px;
+        border: 1px solid #ffffff13;
+        border-radius: 13px;
+        background: #ffffff05;
+      }
+
+      .idea-title {
+        margin: 11px 0 8px;
+        font-size: clamp(20px, 2.5vw, 25px);
+        letter-spacing: -.045em;
+        line-height: 1.12;
+      }
+
+      .idea-description {
+        margin: 0;
+        color: #b6bbc8;
+        font-size: 14px;
+        line-height: 1.65;
+      }
+
+      .idea-nudge {
+        display: flex;
+        gap: 11px;
+        align-items: flex-start;
+        margin-top: 13px;
+        padding-top: 12px;
+        border-top: 1px solid #ffffff12;
+        color: #d1d4de;
+        font-size: 12px;
+        line-height: 1.55;
+      }
+
+      .nudge-icon { color: var(--lime); font-weight: 800; }
+
+      .result-actions { justify-content: space-between; gap: 12px; margin-top: 22px; }
+
+      .copy-button {
+        padding: 9px 13px;
+        border: 1px solid #ffffff27;
+        border-radius: 9px;
+        background: transparent;
+        color: #e4e6ed;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 650;
+      }
+
+      .copy-button:hover:not(:disabled) { background: #ffffff0d; }
+      .copy-button:disabled { color: #777e90; cursor: not-allowed; }
+
+      .idea-count { color: #858b9d; font-size: 11px; }
+      .footer-note { margin: 34px 0 0; color: #747b8e; font-size: 11px; text-align: center; }
+
+      @media (max-width: 760px) {
+        .app { padding: 23px 20px 30px; }
+        main { padding-top: 45px; }
+        .intro { margin-bottom: 26px; }
+        .workspace { grid-template-columns: 1fr; gap: 30px; width: min(460px, 100%); }
+        .wheel-wrap { width: min(100%, 360px); }
+        .result-card { min-height: 0; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { scroll-behavior: auto !important; }
+        #wheel, .spin-button { transition-duration: .01ms; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand"><span class="brand-mark" aria-hidden="true">✳</span> idea orbit</div>
+        <div class="status"><span class="status-dot" aria-hidden="true"></span> Your next big thing</div>
+      </header>
+
+      <main>
+        <section class="intro" aria-labelledby="page-title">
+          <p class="eyebrow">A little spin. A lot of possibility.</p>
+          <h1 id="page-title">Stuck on what to build?</h1>
+          <p class="intro-copy">Give the wheel a spin and get a project idea to kick off your next hackathon, side project, or big-brainstorm session.</p>
+        </section>
+
+        <section class="workspace" aria-label="Project idea generator">
+          <div class="wheel-area">
+            <div class="wheel-wrap">
+              <span class="pointer" aria-hidden="true"></span>
+              <svg id="wheel" viewBox="0 0 400 400" role="img" aria-label="A wheel of project themes">
+                <g id="wheel-slices"></g>
+                <circle class="hub" cx="200" cy="200" r="31"></circle>
+                <path class="hub-star" d="M200 182l4.7 12.2L217 199l-12.3 4.8L200 216l-4.8-12.2L183 199l12.2-4.8z"></path>
+              </svg>
+            </div>
+            <p class="wheel-hint" id="wheel-hint">Spin through all the project themes.</p>
+
+            <div class="controls">
+              <label class="control-label" for="theme-select">Pick a direction (or leave it to fate)</label>
+              <select id="theme-select" aria-label="Choose a project theme">
+                <option value="all">Surprise me — any theme</option>
+              </select>
+              <button class="spin-button" id="spin-button" type="button">Spin for an idea <span aria-hidden="true">↗</span></button>
+            </div>
+          </div>
+
+          <section class="result-card" aria-labelledby="result-heading" aria-live="polite" aria-atomic="false">
+            <div class="result-heading">
+              <h2 id="result-heading">Your next project</h2>
+              <span class="sparkle" aria-hidden="true">✳</span>
+            </div>
+            <div class="idea-list" id="idea-content">
+              <article class="idea-item">
+                <span class="idea-category">READY WHEN YOU ARE</span>
+                <h3 class="idea-title">Your next idea is around the corner.</h3>
+                <p class="idea-description">Spin the wheel to find a project idea to get started.</p>
+              </article>
+            </div>
+            <div class="result-actions">
+              <button class="copy-button" id="copy-button" type="button" disabled>Copy idea</button>
+              <span class="idea-count" id="idea-count">14 themes to explore</span>
+            </div>
+          </section>
+        </section>
+        <p class="footer-note">Made for curious minds and teams that like to make things.</p>
+      </main>
+    </div>
+
+    <script>
+      const themes = [
+        {
+          name: "Climate",
+          color: "#b7d967",
+          ideas: [
+            ["A Lighter Commute", "Help people find the lowest-carbon route to wherever they need to go.", "Mix transit, cycling, and walking into one friendly trip planner."],
+            ["Good Food, Less Waste", "Give kitchens a clever way to use ingredients before they go bad.", "Start with a shared pantry and a few recipe suggestions."],
+            ["Neighborhood Nature", "Make local green spaces easier to discover, care for, and enjoy.", "Try a map with community-submitted spots and small actions."],
+            ["Refill Finder", "Map nearby places where people can refill a water bottle or reuse a container.", "Start with a small map and community-submitted refill spots."],
+            ["Home Energy Coach", "Help households find simple ways to use less energy at home.", "Make a checklist of low-cost actions and let people track what they try."],
+            ["Repair, Don't Replace", "Connect people with local repair guides, events, and places that fix everyday items.", "Pick one common item and build a clear repair resource page."],
+            ["Cool Block Map", "Show neighbors where to find shade, water, and cooler public spaces on hot days.", "Map a few useful places and let the community add more."],
+            ["Greener Event Kit", "Help event organizers plan lower-waste gatherings with reusable checklists.", "Create a template for food, travel, and reusable supplies."]
+          ]
+        },
+        {
+          name: "Health",
+          color: "#f0a184",
+          ideas: [
+            ["Small Steps Studio", "Make building a healthy habit feel doable on even the busiest days.", "Let people pick a tiny daily goal and celebrate showing up."],
+            ["Care Circle", "Help friends and family coordinate practical support for someone who needs it.", "Build a simple shared calendar for meals, rides, or check-ins."],
+            ["Mindful Minute", "Create a pocket-sized reset for people who need a breather between tasks.", "Offer short, welcoming audio or visual breaks."],
+            ["Sleep Wind-Down", "Help people build a calming, screen-light routine before bedtime.", "Make a customizable checklist with gentle reminders."],
+            ["Move a Little", "Suggest easy ways to add comfortable movement breaks to a person's day.", "Let people choose a short activity and set their own pace."],
+            ["Daily Check-In", "Give people a private place to note how their day is going and what might help.", "Build a simple mood journal with optional reflection prompts."],
+            ["Care Calendar", "Make it easier for a group to coordinate appointments, rides, and everyday support.", "Let a person create a shared calendar and invite trusted helpers."],
+            ["Water Break Buddy", "Help people remember to pause for a drink during a busy day.", "Create flexible reminders people can adjust or turn off."]
+          ]
+        },
+        {
+          name: "Learning",
+          color: "#f2cb72",
+          ideas: [
+            ["Explain It Another Way", "Help learners get a fresh explanation when a concept just isn't clicking.", "Turn one topic into a visual, an analogy, and a quick quiz."],
+            ["Skill Swap", "Connect people who want to teach one thing with people eager to learn it.", "Make a tiny local board for short, informal lessons."],
+            ["Study Quest", "Turn a study plan into a series of small wins a learner can actually finish.", "Break a subject into milestones and playful challenges."],
+            ["Five-Minute Skill Builder", "Teach one practical skill through short lessons people can finish in a spare moment.", "Choose one skill and draft its first five-minute lesson."],
+            ["Study Buddy Match", "Help learners find a partner with a similar subject, schedule, or study goal.", "Create a simple profile and matching board for one class."],
+            ["Language Exchange Loop", "Pair people who want to practice each other's languages in short sessions.", "Let users choose a language, a comfort level, and a time to practice."],
+            ["Learn by Making", "Turn a topic into a small hands-on project with clear milestones.", "Write one beginner-friendly project brief and its first step."],
+            ["Concept Card Maker", "Help students turn notes into concise review cards and self-check questions.", "Start with a small set of cards for one lesson."]
+          ]
+        },
+        {
+          name: "Access",
+          color: "#9bc5e8",
+          ideas: [
+            ["Sensory-Friendly Finder", "Help people discover places that match their accessibility and sensory needs.", "Start with a community-reviewed guide to local spots."],
+            ["Caption Companion", "Make everyday audio easier to follow for more people.", "Prototype clear live notes or searchable captions for a small setting."],
+            ["Route for Everyone", "Help people plan journeys around the access details that matter to them.", "Map step-free paths, quiet stops, or places to rest."],
+            ["Quiet Route Guide", "Help people find routes with quieter stops and places to take a break.", "Map a small area and let users filter by the details they need."],
+            ["Plain Words", "Make complicated public information easier to understand without losing key details.", "Choose one confusing page and rewrite it in clear, everyday language."],
+            ["Event Access Checklist", "Help event hosts plan and share useful accessibility details before people arrive.", "Build a checklist for entrances, seating, restrooms, and sensory needs."],
+            ["Alt Text Workshop", "Help creators write more useful image descriptions for their content.", "Make a simple editor with examples and a preview for screen readers."],
+            ["My Access Notes", "Let people save the access preferences that make outings work better for them.", "Build a private, editable checklist they can reuse when planning."]
+          ]
+        },
+        {
+          name: "Community",
+          color: "#b7a3e8",
+          ideas: [
+            ["Borrow Better", "Make it easy for neighbors to share the things they only use once in a while.", "Build a friendly lending library for tools, games, or gear."],
+            ["Local Loop", "Help people find and support events, clubs, and makers close to home.", "Create a neighborhood calendar with a welcoming RSVP flow."],
+            ["Good Neighbor Board", "Turn small community needs into simple ways for others to lend a hand.", "Let people post requests and offers in one easy-to-scan place."],
+            ["Community Pantry Map", "Help neighbors find community fridges, food pantries, and donation drop-offs.", "Map a few verified locations and show hours and contribution guidelines."],
+            ["Volunteer Match", "Connect local groups with people who have time or skills to share.", "Create a board of short, specific volunteer opportunities."],
+            ["Welcome Neighbor", "Help newcomers find local groups, useful services, and friendly events.", "Make a starter guide that neighbors can personalize and share."],
+            ["Skill Share Saturdays", "Help neighbors trade practical skills through short, low-pressure meetups.", "Let people post one skill to share and one they would like to learn."],
+            ["Community Choice Board", "Give residents a simple way to suggest and support small neighborhood improvements.", "Collect ideas, let neighbors vote, and show what happens next."]
+          ]
+        },
+        {
+          name: "Productivity",
+          color: "#e89cb9",
+          ideas: [
+            ["Focus Friend", "Help a team make space for focused work without losing touch with each other.", "Try shared focus sessions with gentle status updates."],
+            ["Meeting to Momentum", "Turn a busy meeting into a short, clear list of next steps.", "Capture decisions, owners, and deadlines in one tidy recap."],
+            ["Tiny Task Tamer", "Make an overwhelming to-do list feel like one manageable next move.", "Suggest a small first step and a realistic time estimate."],
+            ["Team Handoff", "Make it easier for teammates to pass work along with context and clear next actions.", "Create a short handoff template with owner, status, and blockers."],
+            ["Decision Notebook", "Keep a searchable record of team decisions and why they were made.", "Log a decision, its owner, and the date to revisit it."],
+            ["Deadline Map", "Help a team see how tasks and deadlines fit together before a project gets hectic.", "Build a shared timeline with a few milestones and dependencies."],
+            ["Inbox to Action", "Turn incoming requests into a clear list of tasks, owners, and follow-ups.", "Start with a small form that captures the request and its next step."],
+            ["Project Pulse", "Give a team a quick way to share progress, priorities, and blockers.", "Try a weekly check-in with three short prompts."]
+          ]
+        },
+        {
+          name: "Food",
+          color: "#f0a75c",
+          ideas: [
+            ["What's for Dinner?", "Help people make a satisfying meal from what they already have.", "Build a pantry-first recipe picker with a few useful filters."],
+            ["Lunchbox Lab", "Make it easier to plan varied lunches around a person's tastes and needs.", "Generate a simple weekly menu and a reusable shopping list."],
+            ["Table for All", "Help groups find a place to eat that works for everyone's preferences.", "Collect dietary needs and suggest a few inclusive options."],
+            ["Leftover Remix", "Suggest creative ways to use leftovers and ingredients that need attention soon.", "Let people enter a few ingredients and browse flexible recipe ideas."],
+            ["Market Basket Map", "Help shoppers discover local markets and the produce they have in season.", "Map a few markets and list their latest community updates."],
+            ["Fresh First", "Help people keep track of food at home and use older ingredients first.", "Build a shared pantry list with simple use-by reminders."],
+            ["Meal Plan Together", "Make it easier for a household to plan meals around everyone's preferences.", "Create a shared weekly menu and collaborative shopping list."],
+            ["Ingredient Swap", "Find practical substitutions when a recipe calls for something a cook does not have.", "Start with a searchable list of common ingredient swaps."]
+          ]
+        },
+        {
+          name: "Money",
+          color: "#7cc9bd",
+          ideas: [
+            ["Subscription Sweeper", "Give people a clearer picture of recurring costs they may have forgotten.", "Start with a manual tracker and a friendly monthly summary."],
+            ["Shared Stuff, Fair Split", "Take the awkwardness out of splitting shared costs with friends or roommates.", "Make expenses easy to log, understand, and settle up."],
+            ["Future Me Fund", "Help someone turn a big savings goal into small, encouraging milestones.", "Visualize progress with bite-sized, flexible targets."],
+            ["Bill Calendar", "Help people see upcoming bills and plan around their pay schedule.", "Add recurring bills to a simple calendar with optional reminders."],
+            ["Price Watch Board", "Let shoppers compare prices for everyday items across nearby stores.", "Track a small set of products and let users add local prices."],
+            ["Trip Budget Buddy", "Help friends plan shared trip costs before and during a getaway.", "Make a simple budget with shared expenses and a clear per-person view."],
+            ["First Paycheck Planner", "Help someone plan their first paycheck around needs, goals, and fun.", "Create a flexible budget template people can adjust to their situation."],
+            ["Cost Split Calendar", "Keep recurring household costs organized so roommates know what is due and when.", "Track shared bills, due dates, and who has paid."]
+          ]
+        },
+        {
+          name: "Video Games",
+          wheelLabel: "Games",
+          color: "#ef8faa",
+          ideas: [
+            ["Tiny Moon Courier", "Deliver parcels across low-gravity islands while managing fuel, routes, and gentle physics puzzles.", "Build one small map with a single delivery and a few obstacles."],
+            ["Lantern Keeper", "Explore a shifting forest where changing a lantern's color reveals hidden paths and clues.", "Make one screen where two lantern colors change the environment."],
+            ["Dungeon Draft", "Create a dungeon from room cards, then try to survive the route you designed.", "Start with three room types and one simple encounter."],
+            ["Pocket Planet Gardener", "Grow a tiny planet by balancing sunlight, water, and space for unusual plants.", "Create one planet screen and three plants with different needs."],
+            ["Last Train Home", "Reconnect a train route by solving short track puzzles before the final departure.", "Sketch one grid puzzle with track pieces and a clear win condition."],
+            ["Museum After Hours", "Explore a playful museum and solve object-based puzzles hidden in its exhibits.", "Build one gallery room with three interactive exhibits."],
+            ["Echo Courier", "Navigate a cave by listening to echoes that reveal nearby walls and landmarks.", "Prototype one room where a sound pulse reveals obstacles."],
+            ["Co-op Kitchen Chaos", "Two players with different abilities coordinate to prepare orders in a timed kitchen.", "Build one level with two tasks that require teamwork."],
+            ["The Clockwork Post Office", "Sort unusual packages by clues and route them through a whimsical post office.", "Create a sorting puzzle with a few package types and conveyor paths."],
+            ["Rooftop Rhythm Run", "Time rooftop jumps to a beat in a short rhythm-platforming challenge.", "Prototype one short course with three timed jumps."],
+            ["Creature Field Notes", "Explore a small world and document creatures by observing their behavior.", "Create a map, a creature journal, and a few observable behaviors."],
+            ["One More Try Arena", "Play a compact action challenge with adjustable settings for different play styles.", "Build one arena and test a few player-controlled challenge settings."]
+          ]
+        },
+        {
+          name: "Art & Design",
+          wheelLabel: "Art",
+          color: "#ad91e8",
+          ideas: [
+            ["Color Pair Playground", "Help makers explore accessible color combinations and save palettes for future projects.", "Build a palette picker with contrast previews."],
+            ["Poster Remix Studio", "Turn event details into a starting point for a bold, editable poster.", "Make one template with adjustable type, color, and layout."],
+            ["Font Pair Finder", "Help designers compare readable font pairings for different kinds of projects.", "Show a few sample headings and body text side by side."],
+            ["Album Cover Lab", "Give musicians a simple canvas to sketch and share original cover concepts.", "Create a square canvas with a few shapes, colors, and type options."],
+            ["Daily Sketch Relay", "Let a group build a collaborative drawing one small contribution at a time.", "Make a shared canvas with a turn-based prompt."],
+            ["Moodboard Map", "Organize images, colors, and notes into visual boards for a project.", "Build a board where people can add and rearrange reference cards."],
+            ["Design Critique Cards", "Help creative teams give clear, kind, and actionable feedback on work in progress.", "Write a short feedback flow with a few focused prompts."],
+            ["Tiny Icon Workshop", "Make it easy to create a consistent set of simple icons for a prototype.", "Start with a small grid, a few shapes, and an exportable preview."]
+          ]
+        },
+        {
+          name: "Music",
+          wheelLabel: "Music",
+          color: "#7bc8d0",
+          ideas: [
+            ["Practice Loop", "Help musicians plan short practice sessions and notice what they have worked on.", "Build a session timer with a simple practice log."],
+            ["Local Gig Finder", "Help people discover small live music events happening nearby.", "Create an event list with location, date, and an easy save button."],
+            ["Setlist Sidekick", "Make it easier for bands to plan setlists around timing, mood, and instrument changes.", "Build a drag-and-drop setlist with estimated duration."],
+            ["Jam Session Match", "Connect local musicians who want to play together and share their availability.", "Start with profiles for instruments, styles, and open times."],
+            ["Soundwalk Journal", "Let people record and map interesting sounds they notice on a walk.", "Make a map pin with a short note and optional user-recorded audio."],
+            ["Ear Training Arcade", "Turn short listening exercises into a playful way to practice recognizing musical patterns.", "Prototype a few original tones and a simple matching challenge."],
+            ["Accessible Concert Guide", "Help concertgoers find practical access details before choosing an event.", "Add filters for seating, step-free entry, captions, and quiet spaces."],
+            ["Practice Together", "Help friends keep each other motivated with shared, low-pressure practice goals.", "Create a small group challenge with flexible check-ins."]
+          ]
+        },
+        {
+          name: "Travel",
+          wheelLabel: "Travel",
+          color: "#f1a76b",
+          ideas: [
+            ["Two-Hour Adventure", "Find interesting nearby places for a short outing without planning a full trip.", "Build a map with a few themed, time-limited routes."],
+            ["Pack Light Planner", "Help travelers make a reusable packing list based on trip length and planned activities.", "Start with editable lists for a weekend and a week away."],
+            ["Layover Explorer", "Help people find a realistic mini-itinerary near an airport or station during a layover.", "Show a couple of nearby stops with travel time and return buffer."],
+            ["Step-Free Trip Notes", "Collect access details that help travelers plan routes and destinations with confidence.", "Let people save step-free routes and practical location notes."],
+            ["Local Favorite Exchange", "Let residents share low-key places and activities with visitors.", "Create a small map of community-submitted recommendations."],
+            ["Travel Buddy Itinerary", "Make it easy for a group to share plans, meeting points, and changes during a trip.", "Build a shared itinerary with times and optional updates."],
+            ["Scenic Transit Picker", "Help travelers find pleasant public-transit routes and worthwhile stops along the way.", "Compare a few routes by time, views, and places to pause."],
+            ["Trip Memory Map", "Turn trip photos and notes into a personal map that is easy to revisit and share.", "Add a location pin with a photo and one short memory."]
+          ]
+        },
+        {
+          name: "Science",
+          wheelLabel: "Science",
+          color: "#91ca85",
+          ideas: [
+            ["Backyard Biodiversity", "Help people record the plants and wildlife they notice in nearby green spaces.", "Build a simple observation form and neighborhood map."],
+            ["Night Sky Notebook", "Make it easy to plan a stargazing session and save what someone observed.", "Start with a sky journal and a calendar of visible events."],
+            ["Citizen Weather Map", "Collect local weather observations to help people compare conditions across a neighborhood.", "Let users submit a temperature, time, and general location."],
+            ["Science Fair Finder", "Help students discover science events, deadlines, and project resources in one place.", "Create a local event board with deadline reminders."],
+            ["Data Story Studio", "Turn a small public dataset into a clear chart and a short explanation.", "Choose one open dataset and build a guided visualization."],
+            ["Plant Growth Journal", "Let gardeners track how light, water, and time affect a plant's growth.", "Record a photo and a few observations on a simple timeline."],
+            ["Paper Plane Lab", "Explore how small design changes affect how far a paper plane flies.", "Make a log for plane folds, test conditions, and flight distances."],
+            ["Ocean Observation Log", "Help people learn about local waterways by recording visible conditions and observations.", "Build a field-note form with date, location, and optional photo."]
+          ]
+        },
+        {
+          name: "Pets",
+          wheelLabel: "Pets",
+          color: "#dfa1c7",
+          ideas: [
+            ["Pet Care Calendar", "Help households coordinate feeding, walks, grooming, and appointments for a pet.", "Create a shared schedule with reminders and task owners."],
+            ["Pet-Friendly Places", "Map local parks, cafes, and services that welcome pets, with practical details.", "Start with a community-reviewed map and a few useful filters."],
+            ["Adoption Match Notes", "Help prospective adopters compare shelter animals with their household needs and routines.", "Build a profile checklist focused on questions to ask a shelter."],
+            ["Lost Pet Neighbor Alert", "Help neighbors share a clear, timely notice when a pet goes missing or is found.", "Create a local alert form with contact and sighting details."],
+            ["Walk Buddy Board", "Connect nearby pet owners who want to arrange walks or meetups.", "Make a small board with preferred times and walking areas."],
+            ["Pet Sitter Handoff", "Make it easier to share a pet's routine and important care notes with a sitter.", "Create a reusable care sheet with contacts and daily tasks."],
+            ["Shelter Supply Match", "Help animal shelters list needed supplies and let neighbors offer what they can.", "Build a request board with item, quantity, and pickup details."],
+            ["Pet Milestone Journal", "Give pet owners a simple place to save photos, milestones, and everyday notes.", "Make a timeline with dates, captions, and optional reminders."]
+          ]
+        }
+      ];
+
+      const segmentAngle = 360 / themes.length;
+      const svgNamespace = "http://www.w3.org/2000/svg";
+      const wheel = document.querySelector("#wheel");
+      const slices = document.querySelector("#wheel-slices");
+      const wheelHint = document.querySelector("#wheel-hint");
+      const themeSelect = document.querySelector("#theme-select");
+      const spinButton = document.querySelector("#spin-button");
+      const copyButton = document.querySelector("#copy-button");
+      const ideaContent = document.querySelector("#idea-content");
+      const ideaCount = document.querySelector("#idea-count");
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      let isSpinning = false;
+      let currentRotation = 0;
+      let currentIdea = null;
+      const builtInIdeaCount = themes.reduce((count, theme) => count + theme.ideas.length, 0);
+
+      wheel.setAttribute("aria-label", `A wheel with ${themes.length} project themes`);
+      wheelHint.textContent = `${themes.length} themes and ${builtInIdeaCount} built-in ideas to explore.`;
+      ideaCount.textContent = `${themes.length} themes to explore`;
+
+      function pointAt(angle, radius) {
+        const radians = angle * Math.PI / 180;
+        return {
+          x: 200 + radius * Math.sin(radians),
+          y: 200 - radius * Math.cos(radians)
+        };
+      }
+
+      function addSvgElement(name, attributes, parent) {
+        const element = document.createElementNS(svgNamespace, name);
+        for (const [key, value] of Object.entries(attributes)) element.setAttribute(key, value);
+        parent.append(element);
+        return element;
+      }
+
+      themes.forEach((theme, index) => {
+        const start = index * segmentAngle;
+        const end = start + segmentAngle;
+        const first = pointAt(start, 190);
+        const second = pointAt(end, 190);
+        addSvgElement("path", {
+          d: `M 200 200 L ${first.x} ${first.y} A 190 190 0 0 1 ${second.x} ${second.y} Z`,
+          fill: theme.color,
+          stroke: "#ffffff",
+          "stroke-opacity": ".78",
+          "stroke-width": "2"
+        }, slices);
+
+        const labelPoint = pointAt(start + segmentAngle / 2, 145);
+        const label = addSvgElement("text", {
+          x: labelPoint.x,
+          y: labelPoint.y,
+          class: "slice-label"
+        }, slices);
+        label.textContent = theme.wheelLabel ?? theme.name;
+
+        const option = document.createElement("option");
+        option.value = theme.name;
+        option.textContent = theme.name;
+        themeSelect.append(option);
+      });
+
+      function renderIdea(theme, idea) {
+        currentIdea = {
+          theme: theme.name,
+          title: idea[0],
+          description: idea[1],
+          nextStep: idea[2]
+        };
+        ideaContent.replaceChildren();
+
+        const card = document.createElement("article");
+        card.className = "idea-item";
+
+        const category = document.createElement("span");
+        category.className = "idea-category";
+        category.textContent = `${theme.name.toUpperCase()} IDEA`;
+
+        const title = document.createElement("h3");
+        title.className = "idea-title";
+        title.textContent = idea[0];
+
+        const description = document.createElement("p");
+        description.className = "idea-description";
+        description.textContent = idea[1];
+
+        const nudge = document.createElement("div");
+        nudge.className = "idea-nudge";
+        const icon = document.createElement("span");
+        icon.className = "nudge-icon";
+        icon.setAttribute("aria-hidden", "true");
+        icon.textContent = "✦";
+        const nudgeText = document.createElement("span");
+        nudgeText.textContent = `First step: ${idea[2]}`;
+        nudge.append(icon, nudgeText);
+
+        card.append(category, title, description, nudge);
+        ideaContent.replaceChildren(card);
+        ideaCount.textContent = `${theme.ideas.length} ideas in ${theme.name}`;
+        copyButton.textContent = "Copy idea";
+        copyButton.disabled = false;
+      }
+
+      function spin() {
+        if (isSpinning) return;
+
+        const selectedTheme = themeSelect.value;
+        const choices = selectedTheme === "all"
+          ? themes.map((theme, index) => ({ theme, index }))
+          : themes.map((theme, index) => ({ theme, index })).filter(({ theme }) => theme.name === selectedTheme);
+
+        if (choices.length === 0) return;
+
+        const chosen = choices[Math.floor(Math.random() * choices.length)];
+        const idea = chosen.theme.ideas[Math.floor(Math.random() * chosen.theme.ideas.length)];
+        const targetAngle = (360 - (chosen.index * segmentAngle + segmentAngle / 2)) % 360;
+        const currentAngle = ((currentRotation % 360) + 360) % 360;
+        const alignment = (targetAngle - currentAngle + 360) % 360;
+        const nextRotation = currentRotation + 5 * 360 + alignment;
+
+        isSpinning = true;
+        spinButton.disabled = true;
+        themeSelect.disabled = true;
+        spinButton.textContent = "Spinning…";
+
+        const finishSpin = () => {
+          if (!isSpinning) return;
+          isSpinning = false;
+          currentRotation = nextRotation;
+          renderIdea(chosen.theme, idea);
+          spinButton.disabled = false;
+          themeSelect.disabled = false;
+          spinButton.innerHTML = 'Spin again <span aria-hidden="true">↗</span>';
+          wheel.removeEventListener("transitionend", finishSpin);
+        };
+
+        if (!reduceMotion.matches) {
+          wheel.addEventListener("transitionend", finishSpin);
+        }
+        wheel.style.transform = `rotate(${nextRotation}deg)`;
+        if (reduceMotion.matches) finishSpin();
+      }
+
+      spinButton.addEventListener("click", spin);
+
+      copyButton.addEventListener("click", async () => {
+        if (!currentIdea) return;
+
+        const text = `${currentIdea.title} (${currentIdea.theme})\n${currentIdea.description}\nFirst step: ${currentIdea.nextStep}`;
+        try {
+          await navigator.clipboard.writeText(text);
+          copyButton.textContent = "Copied!";
+          window.setTimeout(() => { copyButton.textContent = "Copy idea"; }, 1800);
+        } catch {
+          copyButton.textContent = "Copy unavailable";
+          window.setTimeout(() => { copyButton.textContent = "Copy idea"; }, 2200);
+        }
+      });
+    </script>
+  </body>
+</html>
