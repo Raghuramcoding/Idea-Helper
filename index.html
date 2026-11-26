@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#111522">
-    < title>Idea Orbit — Find your next project</title>
+    <title>Idea Orbit — Find your next project</title>
     <style>
       :root {
         color-scheme: dark;
@@ -754,6 +754,88 @@
           ]
         }
       ];
+
+      const expandedIdeaFormats = ["Board", "Guide", "Tracker", "Matcher", "Journal", "Planner", "Explorer", "Simulator", "Directory", "Archive"];
+
+      const expandedIdeaLibrary = {
+        "Climate": {
+          nouns: ["Community Garden", "Transit Route", "Refill Station", "Repair Station", "Clean Energy", "Water Saver", "Green Roof", "Urban Forest", "Recycling Hub", "Cooling Spot"],
+          uses: ["discover practical local resources", "coordinate a small climate action", "track progress toward a shared goal", "make a responsible habit easier", "compare lower-impact choices", "connect neighbors with useful knowledge", "measure a simple environmental change", "share a clear update with a community", "plan an event with less waste", "help people take a comfortable first step"]
+        },
+        "Health": {
+          nouns: ["Daily Routine", "Care Circle", "Wellness Journal", "Support Session", "Movement Break", "Sleep Ritual", "Appointment Planner", "Mindful Pause", "Recovery Tracker", "Care Resource"],
+          uses: ["support a personal routine", "make wellbeing check-ins more comfortable", "coordinate practical care", "track patterns without pressure", "help someone prepare for an appointment", "offer flexible options for different needs", "connect people with trusted support", "turn a small goal into a manageable step", "share progress privately or with a group", "build a repeatable pause for busy days"]
+        },
+        "Learning": {
+          nouns: ["Study Plan", "Lesson Deck", "Concept Map", "Practice Loop", "Skill Challenge", "Language Exchange", "Field Activity", "Review Card", "Learning Group", "Project Brief"],
+          uses: ["make a difficult topic easier to approach", "turn curiosity into a clear question", "help learners practice in short sessions", "connect an idea to a real-world task", "adapt a lesson to different starting points", "give peers useful feedback", "track progress across small milestones", "compare explanations in a useful way", "build confidence through hands-on work", "share resources with a study group"]
+        },
+        "Access": {
+          nouns: ["Venue Profile", "Communication Card", "Route Note", "Caption Tool", "Feedback Form", "Accessibility Checklist", "Sensory Guide", "Reading Aid", "Navigation Aid", "Access Map"],
+          uses: ["make a place easier to navigate", "help people share useful preferences", "communicate essential details clearly", "reduce uncertainty before a visit", "collect actionable accessibility feedback", "support a wider range of ways to participate", "make written information more understandable", "offer useful choices instead of assumptions", "help organizers improve a real experience", "let users find information without barriers"]
+        },
+        "Community": {
+          nouns: ["Neighborhood Board", "Resource Map", "Volunteer Roster", "Skill Exchange", "Community Event", "Local Guide", "Shared Pantry", "Meeting Circle", "Project Group", "Welcome Kit"],
+          uses: ["help neighbors share useful information", "turn local needs into clear ways to help", "coordinate a small volunteer effort", "make new connections feel more welcoming", "show residents what is happening nearby", "organize a practical community resource", "invite people to contribute at their comfort level", "keep a group project moving", "preserve a local story or memory", "make it easier to include different voices"]
+        },
+        "Productivity": {
+          nouns: ["Task System", "Meeting Agenda", "Project Timeline", "Handoff Page", "Focus Session", "Decision Log", "Priority Board", "Weekly Review", "Team Workspace", "Chore Rotation"],
+          uses: ["turn a loose task into a clear next action", "reduce coordination time", "make progress visible to a team", "capture context before work changes hands", "protect time for focused effort", "document a decision and its reasoning", "balance workload across a group", "surface blockers early", "combine planning with a useful recap", "make recurring work easier to share"]
+        },
+        "Food": {
+          nouns: ["Pantry List", "Recipe Card", "Meal Plan", "Market Guide", "Ingredient Swap", "Potluck Board", "Food Share", "Cooking Lesson", "Shopping List", "Family Recipe"],
+          uses: ["help people use what they already have", "reduce avoidable food waste", "plan around preferences and availability", "make a recipe easier to follow", "suggest a practical substitution", "coordinate a shared meal", "make local ingredients easier to discover", "teach one useful cooking skill", "keep household planning in one place", "preserve a recipe and its story"]
+        },
+        "Money": {
+          nouns: ["Budget Board", "Savings Goal", "Expense Splitter", "Bill Calendar", "Price Watch", "Shared Purchase", "Cost Comparison", "Spending Review", "Donation Drive", "Financial Guide"],
+          uses: ["make a personal budget easier to understand", "turn a savings goal into small milestones", "split a shared cost fairly", "show upcoming expenses at a useful time", "compare options before buying", "help a group agree on a purchase", "track a payment without awkward reminders", "make recurring costs visible", "organize a transparent group effort", "explain a money term in plain language"]
+        },
+        "Video Games": {
+          nouns: ["Dungeon Quest", "Forest Adventure", "Puzzle Arena", "Creature Habitat", "Rhythm Challenge", "Co-op Mission", "Space Expedition", "Town Mystery", "Card Battle", "Maze Builder"],
+          uses: ["teach a small mechanic through playful discovery", "offer a fresh challenge in a compact level", "reward careful observation", "make cooperation meaningful", "give players different ways to succeed", "introduce a choice with a visible consequence", "reuse an environment in an unexpected way", "mix exploration with a clear goal", "encourage creative problem solving", "turn a simple loop into a satisfying play session"]
+        },
+        "Art & Design": {
+          nouns: ["Visual Palette", "Poster Template", "Pattern System", "Icon Set", "Moodboard", "Type Specimen", "Sketch Prompt", "Critique Session", "Gallery Page", "Pixel Canvas"],
+          uses: ["help makers explore visual options", "start a project with a flexible template", "give creative feedback in a clear format", "build a consistent set of elements", "compare design directions quickly", "document the choices behind an idea", "turn a constraint into inspiration", "make a new concept easier to present", "organize references into a useful story", "support a simple export and sharing workflow"]
+        },
+        "Music": {
+          nouns: ["Practice Plan", "Setlist", "Listening Exercise", "Jam Group", "Sound Journal", "Song Starter", "Tempo Tool", "Concert Guide", "Instrument Log", "Collaborative Mix"],
+          uses: ["make a practice session easier to start", "organize a set around energy and pacing", "help a musician notice progress", "coordinate a low-pressure jam", "turn an everyday sound into an idea", "offer a fresh songwriting constraint", "give learners immediate feedback", "make a live event more accessible", "keep track of an instrument or setup", "help contributors build a shared piece"]
+        },
+        "Travel": {
+          nouns: ["Trip Route", "Packing List", "Local Guide", "Transit Plan", "Budget Splitter", "Memory Map", "Layover Explorer", "Rest Stop Map", "Walking Tour", "Trip Journal"],
+          uses: ["make a journey easier to plan", "help a group coordinate from afar", "discover nearby places in a limited time", "compare practical travel choices", "keep useful access details in one place", "preserve a meaningful travel memory", "reduce uncertainty during a connection", "find a comfortable place to pause", "support a slower, more thoughtful trip", "share a personal route with future visitors"]
+        },
+        "Science": {
+          nouns: ["Field Journal", "Data Set", "Observation Log", "Sky Calendar", "Experiment Kit", "Nature Map", "Weather Station", "Growth Tracker", "Citizen Project", "Data Story"],
+          uses: ["turn curiosity into a useful observation", "help learners test a clear question", "record data consistently", "find patterns in a small dataset", "connect a local place to a scientific idea", "make a simple experiment easier to repeat", "compare observations over time", "explain evidence in plain language", "invite safe community participation", "show how changing a variable affects a result"]
+        },
+        "Pets": {
+          nouns: ["Care Calendar", "Adoption Profile", "Walking Route", "Pet Journal", "Sitter Handoff", "Shelter Supply", "Enrichment Picker", "Friendly Place", "Health Note", "Playdate Planner"],
+          uses: ["coordinate everyday pet care", "help an adopter compare important needs", "make routines easier to share", "record a useful pet milestone", "prepare for a sitter or temporary foster", "match shelter requests with local help", "offer safe enrichment options", "find a useful place or service", "keep chosen health details organized", "plan a comfortable meetup between pets"]
+        }
+      };
+
+      const existingIdeaTitles = new Set();
+      themes.forEach(theme => theme.ideas.forEach(idea => existingIdeaTitles.add(idea[0])));
+
+      themes.forEach(theme => {
+        const library = expandedIdeaLibrary[theme.name];
+        expandedIdeaFormats.forEach((format, formatIndex) => {
+          library.nouns.forEach((noun, nounIndex) => {
+            library.uses.forEach((use, useIndex) => {
+              const title = `${noun} ${format} ${formatIndex + 1}.${nounIndex + 1}.${useIndex + 1}`;
+              if (existingIdeaTitles.has(title)) return;
+              existingIdeaTitles.add(title);
+              theme.ideas.push([
+                title,
+                `Create a ${format.toLowerCase()} for ${theme.name.toLowerCase()} that helps people ${use} through ${noun.toLowerCase()}.`,
+                `Build a small prototype around ${noun.toLowerCase()}, test it with three people, and revise the clearest useful detail.`
+              ]);
+            });
+          });
+        });
+      });
 
       const segmentAngle = 360 / themes.length;
       const svgNamespace = "http://www.w3.org/2000/svg";
