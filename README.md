@@ -24,3 +24,4 @@ Open `index.html` in a modern web browser. No other files, installation, or buil
 - Random or theme-specific spins
 - Copy the selected idea to the clipboard
 - Responsive layout and reduced-motion support
+- Two batches of runnable project examples under [`Examples/`](./Examples/) (9,984 projects so far)
