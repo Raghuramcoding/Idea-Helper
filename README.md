@@ -2,11 +2,11 @@
 
 Idea Orbit is a simple project-idea generator for hackathons, events, and brainstorming sessions. Spin a colorful wheel to get a random project prompt, or choose a theme first to get an idea from a specific area. Each prompt includes a short description and a suggested first step to help you start building.
 
-The wheel covers fourteen themes, including climate, health, learning, community, productivity, video games, art and design, music, travel, science, and pets. It includes 14,290 unique built-in ideas, including 1,000 expanded ideas in each theme plus the original hand-written concepts, so it works without an internet connection or an AI service.
+The wheel covers nineteen themes, including climate, health, learning, community, productivity, video games, art and design, music, travel, science, pets, sports, photography, robotics, home projects, and the outdoors. It includes 19,980 built-in ideas, each stored in `index.html`, and works without an internet connection or an AI service.
 
 ## Run it
 
-Open `index.html` in a modern web browser. No installation or build step is needed.
+Open `index.html` in a modern web browser. No other files, installation, or build step are needed.
 
 ## How to use it
 
@@ -14,10 +14,13 @@ Open `index.html` in a modern web browser. No installation or build step is need
 2. Select **Spin** to reveal a project idea.
 3. Read the idea description and first step, then select **Copy idea** to copy it.
 4. Spin again whenever you want another prompt.
+5. Select **Browse idea library** to search and filter the full collection by category.
 
 ## Features
 
-- Fourteen themes with 14,290 built-in project prompts
+- Nineteen themes with 19,980 built-in project prompts
+- Animated spins that land on the theme used for the selected idea
+- Searchable idea library with category filters and paginated results
 - Random or theme-specific spins
 - Copy the selected idea to the clipboard
 - Responsive layout and reduced-motion support
