@@ -18,6 +18,10 @@ Open `index.html` in a modern web browser. No other files, installation, or buil
 
 Open `idea-library.html` to browse the standalone searchable collection. The **Idea library link** in the main app currently points to `about:blank` as a placeholder for a destination you will configure later.
 
+## Tests
+
+Install the development dependencies with `npm install`, install Chromium with `npx playwright install chromium`, then run `npm test`. The Playwright smoke tests cover the standalone library's search, category filtering, pagination, and empty state, plus the generator spin and placeholder link.
+
 ## Features
 
 - Nineteen themes with 19,980 built-in project prompts
