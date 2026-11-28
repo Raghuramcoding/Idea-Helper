@@ -49,7 +49,7 @@
       .brand-mark { color: var(--lime); font-size: 21px; }
       .topbar-actions { display: flex; align-items: center; gap: 15px; }
 
-      .library-open-button, .library-close-button, .library-more {
+      .library-open-button, .library-link, .library-close-button, .library-more {
         border: 1px solid #ffffff27;
         border-radius: 9px;
         background: #ffffff08;
@@ -57,10 +57,11 @@
         cursor: pointer;
         font-size: 12px;
         font-weight: 700;
+        text-decoration: none;
       }
 
-      .library-open-button { padding: 10px 13px; }
-      .library-open-button:hover, .library-close-button:hover, .library-more:hover { background: #ffffff15; }
+      .library-open-button, .library-link { padding: 10px 13px; }
+      .library-open-button:hover, .library-link:hover, .library-close-button:hover, .library-more:hover { background: #ffffff15; }
 
       .status {
         gap: 8px;
@@ -396,7 +397,7 @@
         .app { padding-right: 15px; padding-left: 15px; }
         .topbar { align-items: flex-start; gap: 12px; }
         .topbar-actions { align-items: flex-end; flex-direction: column-reverse; gap: 9px; }
-        .library-open-button { padding: 8px 10px; }
+        .library-open-button, .library-link { padding: 8px 10px; }
         .library-dialog { padding: 18px; }
         .library-filters, .library-results { grid-template-columns: 1fr; }
       }
@@ -413,6 +414,7 @@
         <div class="brand"><span class="brand-mark" aria-hidden="true">✳</span> idea orbit</div>
         <div class="topbar-actions">
           <button class="library-open-button" id="library-open" type="button" aria-haspopup="dialog" aria-controls="library-dialog">Browse idea library</button>
+          <a class="library-link" href="about:blank">Idea library link</a>
           <div class="status"><span class="status-dot" aria-hidden="true"></span> Your next big thing</div>
         </div>
       </header>
